@@ -1,0 +1,436 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    background: linear-gradient(135deg, #a8e6cf 0%, #87ceeb 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Pixel art background pattern */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.05) 2px, rgba(255,255,255,.05) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.05) 2px, rgba(255,255,255,.05) 4px);
+    pointer-events: none;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.form-container {
+    background: #f5f5dc;
+    border: 4px solid #2d5016;
+    border-radius: 0;
+    box-shadow: 
+        8px 8px 0 #2d5016,
+        8px 8px 0 2px #5a9216;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+.form-toggle {
+    display: flex;
+    background: #8fbc8f;
+    border-bottom: 4px solid #2d5016;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    color: #2d5016;
+    text-transform: uppercase;
+    position: relative;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.toggle-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: #5a9216;
+    transition: height 0.1s ease;
+}
+
+.toggle-btn.active {
+    background: #5a9216;
+    color: #fff;
+}
+
+.toggle-btn.active::after {
+    height: 4px;
+}
+
+.form {
+    padding: 40px;
+    display: none;
+    background: #f5f5dc;
+}
+
+.form.active {
+    display: block;
+    animation: pixelFadeIn 0.3s steps(3);
+}
+
+@keyframes pixelFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form h2 {
+    margin-bottom: 30px;
+    color: #2d5016;
+    text-align: center;
+    font-size: 18px;
+    text-shadow: 2px 2px 0 #a8e6cf;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2d5016;
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 3px solid #2d5016;
+    border-radius: 0;
+    font-size: 14px;
+    background: #fff;
+    color: #2d5016;
+    font-family: 'Courier New', monospace;
+    transition: all 0.1s ease;
+    box-shadow: inset 4px 4px 0 rgba(0,0,0,0.1);
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #5a9216;
+    box-shadow: 
+        inset 4px 4px 0 rgba(0,0,0,0.1),
+        0 0 0 3px #a8e6cf;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #5a9216;
+    color: white;
+    border: 4px solid #2d5016;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    font-family: 'Press Start 2P', monospace;
+    box-shadow: 4px 4px 0 #2d5016;
+    position: relative;
+}
+
+.submit-btn:hover {
+    background: #6fb91f;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #2d5016;
+}
+
+.submit-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
+
+.error-message {
+    margin-top: 15px;
+    padding: 10px;
+    background: #ff6b6b;
+    color: white;
+    border: 3px solid #c92a2a;
+    border-radius: 0;
+    font-size: 10px;
+    display: none;
+    font-family: 'Press Start 2P', monospace;
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Homepage Styles */
+.navbar {
+    background: #5a9216;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 0 #2d5016;
+    border-bottom: 4px solid #2d5016;
+}
+
+.navbar h1 {
+    font-size: 16px;
+    text-shadow: 3px 3px 0 #2d5016;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 10px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.logout-btn {
+    padding: 8px 20px;
+    background: #87ceeb;
+    border: 3px solid #2d5016;
+    color: #2d5016;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.1s ease;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 #2d5016;
+}
+
+.logout-btn:hover {
+    background: #a8e6cf;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #2d5016;
+}
+
+.logout-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.main-content {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.welcome-section h2 {
+    font-size: 28px;
+    color: #2d5016;
+    margin-bottom: 10px;
+    text-shadow: 4px 4px 0 #a8e6cf;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.welcome-section p {
+    color: #2d5016;
+    font-size: 12px;
+    font-family: 'Press Start 2P', monospace;
+    margin-top: 15px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.game-card {
+    background: #f5f5dc;
+    border: 4px solid #2d5016;
+    border-radius: 0;
+    padding: 30px;
+    box-shadow: 6px 6px 0 #2d5016;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 2px dashed #a8e6cf;
+    pointer-events: none;
+}
+
+.game-card:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 #2d5016;
+    background: #fff;
+}
+
+.game-card:active {
+    transform: translate(6px, 6px);
+    box-shadow: none;
+}
+
+.game-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    filter: drop-shadow(3px 3px 0 #2d5016);
+    image-rendering: pixelated;
+}
+
+.game-card h3 {
+    color: #2d5016;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-family: 'Press Start 2P', monospace;
+    line-height: 1.6;
+}
+
+.game-card p {
+    color: #5a9216;
+    font-size: 10px;
+    margin-bottom: 20px;
+    font-family: 'Press Start 2P', monospace;
+    line-height: 1.8;
+}
+
+.play-btn {
+    padding: 10px 25px;
+    background: #5a9216;
+    color: white;
+    border: 3px solid #2d5016;
+    border-radius: 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 #2d5016;
+}
+
+.play-btn:hover {
+    background: #6fb91f;
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #2d5016;
+}
+
+.play-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+/* Pixel art decorative elements */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.game-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.game-card:nth-child(2) .game-icon {
+    animation-delay: 0.5s;
+}
+
+.game-card:nth-child(3) .game-icon {
+    animation-delay: 1s;
+}
+
+.game-card:nth-child(4) .game-icon {
+    animation-delay: 1.5s;
+}
+
+.game-card:nth-child(5) .game-icon {
+    animation-delay: 2s;
+}
+
+.game-card:nth-child(6) .game-icon {
+    animation-delay: 2.5s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar h1 {
+        font-size: 12px;
+    }
+    
+    .username {
+        font-size: 8px;
+    }
+    
+    .logout-btn {
+        font-size: 8px;
+        padding: 6px 12px;
+    }
+    
+    .welcome-section h2 {
+        font-size: 20px;
+    }
+    
+    .game-card h3 {
+        font-size: 12px;
+    }
+    
+    .form h2 {
+        font-size: 14px;
+    }
+}

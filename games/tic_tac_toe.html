@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - GameHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            background: linear-gradient(135deg, #a8e6cf 0%, #87ceeb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Pixel art background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.05) 2px, rgba(255,255,255,.05) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.05) 2px, rgba(255,255,255,.05) 4px);
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: #5a9216;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 0 #2d5016;
+            border-bottom: 4px solid #2d5016;
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar h1 {
+            font-size: 14px;
+            text-shadow: 3px 3px 0 #2d5016;
+        }
+
+        .back-btn {
+            padding: 8px 20px;
+            background: #87ceeb;
+            border: 3px solid #2d5016;
+            color: #2d5016;
+            border-radius: 0;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 10px;
+            text-transform: uppercase;
+            box-shadow: 3px 3px 0 #2d5016;
+            transition: all 0.1s ease;
+        }
+
+        .back-btn:hover {
+            background: #a8e6cf;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #2d5016;
+        }
+
+        .back-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: none;
+        }
+
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-title {
+            color: #2d5016;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 0 #a8e6cf;
+        }
+
+        .game-info {
+            color: #2d5016;
+            font-size: 12px;
+            margin-bottom: 20px;
+            background: #f5f5dc;
+            padding: 15px 30px;
+            border: 4px solid #2d5016;
+            box-shadow: 4px 4px 0 #2d5016;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-template-rows: repeat(3, 120px);
+            gap: 8px;
+            background: #2d5016;
+            padding: 8px;
+            border: 6px solid #2d5016;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+        }
+
+        .cell {
+            background: #f5f5dc;
+            border: 4px solid #2d5016;
+            border-radius: 0;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: inset 4px 4px 0 rgba(0,0,0,0.1);
+            position: relative;
+            image-rendering: pixelated;
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 2px dashed rgba(90, 146, 22, 0.3);
+            pointer-events: none;
+        }
+
+        .cell:hover:not(.taken) {
+            background: #fff;
+            transform: scale(0.95);
+            box-shadow: inset 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .cell:active:not(.taken) {
+            transform: scale(0.9);
+        }
+
+        .cell.taken {
+            cursor: not-allowed;
+            background: #a8e6cf;
+        }
+
+        .reset-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: #5a9216;
+            color: white;
+            border: 4px solid #2d5016;
+            border-radius: 0;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #2d5016;
+        }
+
+        .reset-btn:hover {
+            background: #6fb91f;
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #2d5016;
+        }
+
+        .reset-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: none;
+        }
+
+        .winner-message {
+            color: #2d5016;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #a8e6cf;
+            border: 4px solid #2d5016;
+            box-shadow: 4px 4px 0 #2d5016;
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .cell.taken {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Pixel clouds decoration */
+        .cloud {
+            position: absolute;
+            background: white;
+            opacity: 0.3;
+            border-radius: 0;
+            animation: float-cloud 20s linear infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 0;
+        }
+
+        .cloud-1 {
+            width: 60px;
+            height: 20px;
+            top: 100px;
+            left: -60px;
+        }
+
+        .cloud-1::before {
+            width: 40px;
+            height: 20px;
+            top: -10px;
+            left: 10px;
+        }
+
+        .cloud-1::after {
+            width: 30px;
+            height: 20px;
+            top: -10px;
+            right: 10px;
+        }
+
+        .cloud-2 {
+            width: 80px;
+            height: 25px;
+            top: 200px;
+            left: -80px;
+            animation-delay: 8s;
+        }
+
+        .cloud-2::before {
+            width: 50px;
+            height: 25px;
+            top: -12px;
+            left: 15px;
+        }
+
+        @keyframes float-cloud {
+            0% { left: -100px; }
+            100% { left: calc(100% + 100px); }
+        }
+
+        @media (max-width: 768px) {
+            .board {
+                grid-template-columns: repeat(3, 90px);
+                grid-template-rows: repeat(3, 90px);
+            }
+
+            .cell {
+                font-size: 36px;
+            }
+
+            .game-title {
+                font-size: 16px;
+            }
+
+            .game-info {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <nav class="navbar">
+        <h1>⭕ TIC TAC TOE</h1>
+        <a href="../homepage.html" class="back-btn">← Back</a>
+    </nav>
+
+    <div class="game-container">
+        <h2 class="game-title">TIC TAC TOE</h2>
+        <div class="game-info" id="gameInfo">PLAYER X'S TURN</div>
+        
+        <div class="board" id="board">
+            <button class="cell" data-index="0"></button>
+            <button class="cell" data-index="1"></button>
+            <button class="cell" data-index="2"></button>
+            <button class="cell" data-index="3"></button>
+            <button class="cell" data-index="4"></button>
+            <button class="cell" data-index="5"></button>
+            <button class="cell" data-index="6"></button>
+            <button class="cell" data-index="7"></button>
+            <button class="cell" data-index="8"></button>
+        </div>
+
+        <div class="winner-message" id="winnerMessage" style="display: none;"></div>
+        <button class="reset-btn" id="resetBtn">NEW GAME</button>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // Supabase configuration (SAME AS OTHER FILES)
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Check authentication
+        const checkAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            // Track game play
+            try {
+                const { data: currentData } = await supabase
+                    .from('users')
+                    .select('games_played')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                await supabase
+                    .from('users')
+                    .update({ games_played: (currentData?.games_played || 0) + 1 })
+                    .eq('id', session.user.id);
+            } catch (error) {
+                console.error('Error tracking game play:', error);
+            }
+        };
+
+        checkAuth();
+
+        // Game logic
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        const cells = document.querySelectorAll('.cell');
+        const gameInfo = document.getElementById('gameInfo');
+        const winnerMessage = document.getElementById('winnerMessage');
+        const resetBtn = document.getElementById('resetBtn');
+
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        resetBtn.addEventListener('click', resetGame);
+
+        function handleCellClick(e) {
+            const index = e.target.getAttribute('data-index');
+
+            if (gameBoard[index] !== '' || !gameActive) {
+                return;
+            }
+
+            gameBoard[index] = currentPlayer;
+            e.target.textContent = currentPlayer;
+            e.target.classList.add('taken');
+            e.target.style.color = currentPlayer === 'X' ? '#5a9216' : '#87ceeb';
+
+            checkResult();
+        }
+
+        function checkResult() {
+            let roundWon = false;
+
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                    roundWon = true;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                gameInfo.textContent = `PLAYER ${currentPlayer} WINS!`;
+                winnerMessage.textContent = `🎉 PLAYER ${currentPlayer} WINS! 🎉`;
+                winnerMessage.style.display = 'block';
+                gameActive = false;
+                return;
+            }
+
+            if (!gameBoard.includes('')) {
+                gameInfo.textContent = "IT'S A DRAW!";
+                winnerMessage.textContent = "🤝 IT'S A DRAW! 🤝";
+                winnerMessage.style.display = 'block';
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            gameInfo.textContent = `PLAYER ${currentPlayer}'S TURN`;
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            gameInfo.textContent = `PLAYER ${currentPlayer}'S TURN`;
+            winnerMessage.style.display = 'none';
+
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('taken');
+            });
+        }
+    </script>
+</body>
+</html>
