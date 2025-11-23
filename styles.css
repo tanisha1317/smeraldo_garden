@@ -360,7 +360,7 @@ body::before {
 .game-card:hover {
     transform: translate(3px, 3px);
     box-shadow: 3px 3px 0 #2d5016;
-    background: #fff;
+    background: #ccf2cc;
 }
 
 .game-card:active {
@@ -454,6 +454,27 @@ body::before {
 
 .game-card:nth-child(6) .game-icon {
     animation-delay: 2.5s;
+}
+
+.pixel-sprite {
+    position: fixed;
+    image-rendering: pixelated;
+    width: 60px;       /* adjust */
+    z-index: 0;        /* behind everything */
+    opacity: 0.9;
+    animation: floaty 4s ease-in-out infinite;
+}
+
+/* Random positions */
+.tree:nth-child(1) { bottom: 40px; left: 40px; }
+.tree:nth-child(2) { bottom: 50px; right: 50px; }
+.flower:nth-child(3) { bottom: 20px; left: 200px; }
+.flower:nth-child(4) { bottom: 20px; right: 180px; }
+
+/* Gentle float animation */
+@keyframes floaty {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
 }
 
 /* Responsive adjustments */
